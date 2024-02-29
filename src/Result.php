@@ -42,7 +42,7 @@ abstract class Result
     /**
      * Converts from Result<T, E> to Option<T>, and discarding the error, if any
      *
-     * @return Option
+     * @return Option<T>
      * @psalm-return Option<T>
      */
     abstract public function ok(): Option;
@@ -50,7 +50,7 @@ abstract class Result
     /**
      * Converts from Result<T, E> to Option<E>, and discarding the value, if any
      *
-     * @return Option
+     * @return Option<E>
      * @psalm-return Option<E>
      */
     abstract public function err(): Option;
@@ -62,7 +62,7 @@ abstract class Result
      *
      * @param callable $mapper
      * @psalm-param callable(T=,mixed...):U $mapper
-     * @return Result
+     * @return Result<U,E>
      * @psalm-return Result<U,E>
      */
     abstract public function map(callable $mapper): Result;
@@ -74,7 +74,7 @@ abstract class Result
      *
      * @param callable $mapper
      * @psalm-param callable(E=,mixed...):F $mapper
-     * @return Result
+     * @return Result<T,F>
      * @psalm-return Result<T,F>
      */
     abstract public function mapErr(callable $mapper): Result;
@@ -83,7 +83,7 @@ abstract class Result
      * Returns an iterator over the possibly contained value.
      * The iterator yields one value if the result is Ok, otherwise none.
      *
-     * @return array
+     * @return array<int, T>
      * @psalm-return array<int, T>
      */
     abstract public function iter(): array;
@@ -95,7 +95,7 @@ abstract class Result
      *
      * @param Result $res
      * @psalm-param Result<U,E> $res
-     * @return Result
+     * @return Result<U,E>
      * @psalm-return Result<U,E>
      */
     abstract public function and(Result $res): Result;
@@ -107,7 +107,7 @@ abstract class Result
      *
      * @param callable $op
      * @psalm-param callable(T=,mixed...):Result<U,E> $op
-     * @return Result
+     * @return Result<U,E>
      * @psalm-return Result<U,E>
      */
     abstract public function andThen(callable $op): Result;
@@ -131,7 +131,7 @@ abstract class Result
      *
      * @param callable $op
      * @psalm-param callable(E=,mixed...):Result<T,F> $op
-     * @return Result
+     * @return Result<T,F>
      * @psalm-return Result<T,F>
      */
     abstract public function orElse(callable $op): Result;
@@ -141,7 +141,7 @@ abstract class Result
      *
      * @param mixed $optb
      * @psalm-param T $optb
-     * @return mixed
+     * @return T
      * @psalm-return T
      */
     abstract public function unwrapOr($optb);
@@ -151,7 +151,7 @@ abstract class Result
      *
      * @param callable $op
      * @psalm-param callable(E=,mixed...):T $op
-     * @return mixed
+     * @return T
      * @psalm-return T
      */
     abstract public function unwrapOrElse(callable $op);
@@ -159,7 +159,7 @@ abstract class Result
     /**
      * Unwraps a result, yielding the content of an Ok.
      *
-     * @return mixed
+     * @return T
      * @psalm-return T
      * @throws Exception if the value is an Err.
      */
@@ -172,7 +172,7 @@ abstract class Result
      *
      * @param Exception $msg
      * @psalm-param X&Exception $msg
-     * @return mixed
+     * @return T
      * @psalm-return T
      * @throws Exception the message if the value is an Err.
      */
@@ -181,7 +181,7 @@ abstract class Result
     /**
      * Unwraps a result, yielding the content of an Err.
      *
-     * @return mixed
+     * @return E
      * @psalm-return E
      * @throws ResultException if the value is an Ok.
      */
@@ -191,7 +191,7 @@ abstract class Result
      * Applies values inside the given Results to the function in this Result.
      *
      * @param Result ...$inArgs Results to apply the function to.
-     * @return Result
+     * @return Result<mixed,E>
      * @psalm-return Result<mixed,E>
      */
     abstract public function apply(Result ...$inArgs): Result;
@@ -200,7 +200,7 @@ abstract class Result
      * The attached pass-through args will be unpacked into extra args into chained callables
      *
      * @param mixed ...$args
-     * @return Result
+     * @return Result<T,E>
      * @psalm-return Result<T,E>
      */
     abstract public function with(...$args): Result;

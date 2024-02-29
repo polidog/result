@@ -30,13 +30,13 @@ use Prewk\Result;
 class Err extends Result
 {
     /**
-     * @var mixed
+     * @var E
      * @psalm-var E
      */
     private $err;
 
     /**
-     * @var array
+     * @var array<mixed>
      * @psalm-var list<mixed>
      */
     private $pass;
@@ -44,7 +44,7 @@ class Err extends Result
     /**
      * Err constructor.
      *
-     * @param mixed $err
+     * @param E $err
      * @psalm-param E $err
      * @param mixed ...$pass
      */
@@ -81,7 +81,7 @@ class Err extends Result
      *
      * @param callable $mapper
      * @psalm-param callable(T=,mixed...):U $mapper
-     * @return Result
+     * @return Result<U,E>
      * @psalm-return Result<U,E>
      */
     public function map(callable $mapper): Result
@@ -96,7 +96,7 @@ class Err extends Result
      *
      * @param callable $mapper
      * @psalm-param callable(E=,mixed...):F $mapper
-     * @return Result
+     * @return Result<T,F>
      * @psalm-return Result<T,F>
      */
     public function mapErr(callable $mapper): Result
@@ -108,7 +108,7 @@ class Err extends Result
      * Returns an iterator over the possibly contained value.
      * The iterator yields one value if the result is Ok, otherwise none.
      *
-     * @return array
+     * @return array<int, T>
      * @psalm-return array<int, T>
      */
     public function iter(): array
@@ -123,7 +123,7 @@ class Err extends Result
      *
      * @param Result $res
      * @psalm-param Result<U,E> $res
-     * @return Result
+     * @return Result<U,E>
      * @psalm-return Result<U,E>
      */
     public function and(Result $res): Result
@@ -138,7 +138,7 @@ class Err extends Result
      *
      * @param callable $op
      * @psalm-param callable(T=,mixed...):Result<U,E> $op
-     * @return Result
+     * @return Result<U,E>
      * @psalm-return Result<U,E>
      */
     public function andThen(callable $op): Result
@@ -153,7 +153,7 @@ class Err extends Result
      *
      * @param Result $res
      * @psalm-param Result<T,F> $res
-     * @return Result
+     * @return Result<T,F>
      * @psalm-return Result<T,F>
      */
     public function or(Result $res): Result
@@ -168,7 +168,7 @@ class Err extends Result
      *
      * @param callable $op
      * @psalm-param callable(E=,mixed...):Result<T,F> $op
-     * @return Result
+     * @return Result<T,F>
      * @psalm-return Result<T,F>
      *
      * @psalm-assert !callable(T=):Result $op
@@ -183,7 +183,7 @@ class Err extends Result
      *
      * @param mixed $optb
      * @psalm-param T $optb
-     * @return mixed
+     * @return T
      * @psalm-return T
      */
     public function unwrapOr($optb)
@@ -196,7 +196,7 @@ class Err extends Result
      *
      * @param callable $op
      * @psalm-param callable(E=,mixed...):T $op
-     * @return mixed
+     * @return T
      * @psalm-return T
      */
     public function unwrapOrElse(callable $op)
@@ -207,7 +207,7 @@ class Err extends Result
     /**
      * Unwraps a result, yielding the content of an Ok.
      *
-     * @return void
+     * @return T
      * @psalm-return never-return
      * @throws Exception if the value is an Err.
      */
@@ -239,7 +239,7 @@ class Err extends Result
     /**
      * Unwraps a result, yielding the content of an Err.
      *
-     * @return mixed
+     * @return E
      * @psalm-return E
      */
     public function unwrapErr()
@@ -251,7 +251,7 @@ class Err extends Result
      * Applies values inside the given Results to the function in this Result.
      *
      * @param Result ...$inArgs Results to apply the function to.
-     * @return Result
+     * @return Result<mixed,E>
      * @psalm-return Result<mixed,E>
      */
     public function apply(Result ...$inArgs): Result
@@ -262,7 +262,7 @@ class Err extends Result
     /**
      * Converts from Result<T, E> to Option<T>, and discarding the error, if any
      *
-     * @return Option
+     * @return Option<T>
      * @psalm-return Option<T>
      */
     public function ok(): Option
@@ -273,7 +273,7 @@ class Err extends Result
     /**
      * Converts from Result<T, E> to Option<E>, and discarding the value, if any
      *
-     * @return Option
+     * @return Option<E>
      * @psalm-return Option<E>
      */
     public function err(): Option
@@ -285,7 +285,7 @@ class Err extends Result
      * The attached pass-through args will be unpacked into extra args into chained callables
      *
      * @param mixed ...$args
-     * @return Result
+     * @return Result<T,E>
      * @psalm-return Result<T,E>
      */
     public function with(...$args): Result
